@@ -3,15 +3,22 @@
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="utf-8">
   
-  <title>在瞬息中触摸永恒，从微粒中进入广远</title>
+  <title>deepin15.8 NDVIDIA GTX1060 安装CUDA9.1+cuDNN7并编译安装TensorFlow-gpu | 在瞬息中触摸永恒，从微粒中进入广远</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="在瞬息中触摸永恒，从微粒中进入广远">
-<meta property="og:url" content="https://zhujiayou.github.io/index.html">
+  <meta name="description" content="引言 这里编译安装tensorflow是因为tensorflow目前正式发行版本最高只支持到cuda9.0，但是目前deepin安装cuda默认的版本是cuda9.1，所以采用源代码编译安装方式安装； 整个过程是一个比较复杂的流程，涉及到deepin安装与Ubuntu的不同而进行的特殊处理，遇到问题请多思考、搜索解决； 配置的主要复杂之处是NVIDIA驱动、cuda、cudnn、gcc、g++以及">
+<meta name="keywords" content="Linux,TensorFlow,Deepin,cuda">
+<meta property="og:type" content="article">
+<meta property="og:title" content="deepin15.8 NDVIDIA GTX1060 安装CUDA9.1+cuDNN7并编译安装TensorFlow-gpu">
+<meta property="og:url" content="https://zhujiayou.github.io/2019/05/18/deepin15-8-NDVIDIA-GTX1060-安装CUDA9-1-cuDNN7并编译安装TensorFlow-gpu/index.html">
 <meta property="og:site_name" content="在瞬息中触摸永恒，从微粒中进入广远">
+<meta property="og:description" content="引言 这里编译安装tensorflow是因为tensorflow目前正式发行版本最高只支持到cuda9.0，但是目前deepin安装cuda默认的版本是cuda9.1，所以采用源代码编译安装方式安装； 整个过程是一个比较复杂的流程，涉及到deepin安装与Ubuntu的不同而进行的特殊处理，遇到问题请多思考、搜索解决； 配置的主要复杂之处是NVIDIA驱动、cuda、cudnn、gcc、g++以及">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://zhujiayou.github.io/images/nvidia-smi.jpg">
+<meta property="og:updated_time" content="2019-05-18T06:31:37.370Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="在瞬息中触摸永恒，从微粒中进入广远">
+<meta name="twitter:title" content="deepin15.8 NDVIDIA GTX1060 安装CUDA9.1+cuDNN7并编译安装TensorFlow-gpu">
+<meta name="twitter:description" content="引言 这里编译安装tensorflow是因为tensorflow目前正式发行版本最高只支持到cuda9.0，但是目前deepin安装cuda默认的版本是cuda9.1，所以采用源代码编译安装方式安装； 整个过程是一个比较复杂的流程，涉及到deepin安装与Ubuntu的不同而进行的特殊处理，遇到问题请多思考、搜索解决； 配置的主要复杂之处是NVIDIA驱动、cuda、cudnn、gcc、g++以及">
+<meta name="twitter:image" content="https://zhujiayou.github.io/images/nvidia-smi.jpg">
   
     <link rel="alternate" href="/atom.xml" title="在瞬息中触摸永恒，从微粒中进入广远" type="application/atom+xml">
   
@@ -64,9 +71,7 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-    <article id="post-deepin15-8-NDVIDIA-GTX1060-安装CUDA9-1-cuDNN7并编译安装TensorFlow-gpu" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-deepin15-8-NDVIDIA-GTX1060-安装CUDA9-1-cuDNN7并编译安装TensorFlow-gpu" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/05/18/deepin15-8-NDVIDIA-GTX1060-安装CUDA9-1-cuDNN7并编译安装TensorFlow-gpu/" class="article-date">
   <time datetime="2019-05-18T06:16:40.000Z" itemprop="datePublished">2019-05-18</time>
@@ -79,8 +84,8 @@
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/05/18/deepin15-8-NDVIDIA-GTX1060-安装CUDA9-1-cuDNN7并编译安装TensorFlow-gpu/">deepin15.8 NDVIDIA GTX1060 安装CUDA9.1+cuDNN7并编译安装TensorFlow-gpu</a>
+    <h1 class="article-title" itemprop="name">
+      deepin15.8 NDVIDIA GTX1060 安装CUDA9.1+cuDNN7并编译安装TensorFlow-gpu
     </h1>
   
 
@@ -197,131 +202,74 @@ TensorFlow源码，版本1.8.0
     </footer>
   </div>
   
-</article>
- 
-
-
-  
-    <article id="post-Ubuntu-Mint-Deepin-Linux编译安装Vim-8-1，python支持，基础配置，自动补全Completor-vim，代码格式检查flak8-vim" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/05/18/Ubuntu-Mint-Deepin-Linux编译安装Vim-8-1，python支持，基础配置，自动补全Completor-vim，代码格式检查flak8-vim/" class="article-date">
-  <time datetime="2019-05-18T04:20:28.000Z" itemprop="datePublished">2019-05-18</time>
-</a>
     
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/05/18/Ubuntu-Mint-Deepin-Linux编译安装Vim-8-1，python支持，基础配置，自动补全Completor-vim，代码格式检查flak8-vim/">Ubuntu/Mint/Deepin Linux编译安装Vim 8.1，python支持，基础配置，自动补全Completor.vim，代码格式检查flak8.vim</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <!-- Table of Contents -->
-        
-        <h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><ol>
-<li>Vim是一款强大简洁的代码编辑器；</li>
-<li>不过想要它成为开发的千里马，还需要一番调教；</li>
-<li>这里针对本人的日常使用经验，提供一份详细简约的Vim8.1基础配置方案。</li>
-</ol>
-<h2 id="Vim编译安装"><a href="#Vim编译安装" class="headerlink" title="Vim编译安装"></a>Vim编译安装</h2><p>为什么要编译安装呢？主要是因为从操作系统源使用apt安装别人编译好的版本，大多没有python等支持，在使用一些很方便的自动补全等插件时，会出问题。</p>
-<ol>
-<li>安装依赖库：<br>(1) 安装libncurses5-dev，否则编译时会报<code>no terminal library found</code>错误：<br><code>sudo apt install libncurses5-dev</code><br>(2) 由于这里要添加python支持，所以要装python3-dev(或者python-dev，对于python2用户)，否则编译时报<code>Python.h: No such file or directory</code>错误：<br><code>sudo apt-get install python3-dev</code></li>
-<li>克隆Vim源代码，并进入目录：<br><code>git clone https://github.com/vim/vim</code><br><code>cd vim</code></li>
-<li>配置Vim编译选项：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">./configure --with-features=huge \</span><br><span class="line">                  --enable-multibyte \</span><br><span class="line">                  --enable-rubyinterp=yes \</span><br><span class="line">                  --enable-python3interp=yes \</span><br><span class="line">                  --with-python3-config-dir=/usr/lib/python3.5/config-3.5m-x86_64-linux-gnu \</span><br><span class="line">                  --enable-pythoninterp=yes \</span><br><span class="line">                  --with-python-config-dir=/usr/lib/python2.7/config-x86_64-linux-gnu \</span><br><span class="line">                  --enable-perlinterp=yes \</span><br><span class="line">                  --enable-luainterp=yes \</span><br><span class="line">                  --enable-gui=auto \</span><br><span class="line">                  --enable-cscope \</span><br><span class="line">                  --prefix=/usr</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>参数解释如下：<br>–with-features=huge：支持最大特性<br>–enable-rubyinterp：打开对ruby编写的插件的支持<br>–enable-pythoninterp：打开对python编写的插件的支持<br>–enable-python3interp：打开对python3编写的插件的支持<br>–enable-luainterp：打开对lua编写的插件的支持<br>–enable-perlinterp：打开对perl编写的插件的支持<br>–enable-multibyte：打开多字节支持，可以在Vim中输入中文<br>–enable-cscope：打开对cscope的支持<br>–with-python-config-dir=/usr/lib/python2.7/config-x86_64-linux-gnu/ 指定python config路径<br>–with-python-config-dir=/usr/lib/python3.5/config-3.5m-x86_64-linux-gnu/ 指定python3 config路径(<strong>根据自己系统实际情况配置</strong>)<br>–prefix=/usr：指定将要安装到的路径(可自行创建)<br>–enable-gui：GUI支持，可用auto、gtk2或者gnome</p>
-<ol start="4">
-<li>编译安装：<br><code>make</code><br><code>sudo make install</code></li>
-</ol>
-<h2 id="基本配置"><a href="#基本配置" class="headerlink" title="基本配置"></a>基本配置</h2><p>可以参考我的.vimrc文件：<br><code>https://github.com/ZhuJiaYou/ZJYVimConfig/blob/master/.vimrc</code></p>
-<h2 id="自动补全插件Completor"><a href="#自动补全插件Completor" class="headerlink" title="自动补全插件Completor"></a>自动补全插件Completor</h2><ol>
-<li>安装自动补全插件Completor：<br><code>mkdir -p ~/.vim/pack/completor/start</code><br><code>cd ~/.vim/pack/completor/start</code><br><code>git clone https://github.com/maralla/completor.vim.git</code></li>
-<li>python补全支持：<br>(1)安装pip3：<br><code>sudo apt install python3-pip</code><br>(2)安装jedi：<br><code>pip3 install jedi</code><br>.vimrc中加入安装jedi的python路径(上三中基本配置中已有)：<br><code>let g:completor_python_binary = &#39;/path/to/python/with/jedi/installed&#39;</code></li>
-<li>C/C++补全支持：<br>(1)安装clang：<br><code>sudo apt install clang</code><br>在.vimrc中添加(已有)：<br><code>let g:completor_clang_binary = &#39;/path/to/clang&#39;</code><br>(2)C++11 支持：<br><code>vim ~/.vim/pack/completor/start/completor.vim/.clang_complete</code><br>写入：<br><code>-std=c++11</code><br>还可添加其它配置，可<a href="https://github.com/maralla/completor.vim" target="_blank" rel="noopener">参考</a><br>(3)去掉C/C++补全自动占位符，在.vimrc中添加(已有)：<br><code>let g:completor_clang_disable_placeholders = 1</code></li>
-</ol>
-<h2 id="代码格式检查插件flake8"><a href="#代码格式检查插件flake8" class="headerlink" title="代码格式检查插件flake8"></a>代码格式检查插件flake8</h2><ol>
-<li><p>安装：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p ~/.vim/pack/flake8/start/</span><br><span class="line">cd ~/.vim/pack/flake8/start/</span><br><span class="line">git clone https://github.com/nvie/vim-flake8.git</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>按F7可代码检查。</p>
-</li>
-<li>详细配置请<a href="https://github.com/nvie/vim-flake8" target="_blank" rel="noopener">参考</a>。</li>
-</ol>
-
-      
+ <script src="/jquery/jquery.min.js"></script>
+  <div id="random_posts">
+    <h2>推荐文章</h2>
+    <div class="random_posts_ul">
+      <script>
+          var random_count =4
+          var site = {BASE_URI:'/'};
+          function load_random_posts(obj) {
+              var arr=site.posts;
+              if (!obj) return;
+              // var count = $(obj).attr('data-count') || 6;
+              for (var i, tmp, n = arr.length; n; i = Math.floor(Math.random() * n), tmp = arr[--n], arr[n] = arr[i], arr[i] = tmp);
+              arr = arr.slice(0, random_count);
+              var html = '<ul>';
+            
+              for(var j=0;j<arr.length;j++){
+                var item=arr[j];
+                html += '<li><strong>' + 
+                item.date + ':&nbsp;&nbsp;<a href="' + (site.BASE_URI+item.uri) + '">' + 
+                (item.title || item.uri) + '</a></strong>';
+                if(item.excerpt){
+                  html +='<div class="post-excerpt">'+item.excerpt+'</div>';
+                }
+                html +='</li>';
+                
+              }
+              $(obj).html(html + '</ul>');
+          }
+          $('.random_posts_ul').each(function () {
+              var c = this;
+              if (!site.posts || !site.posts.length){
+                  $.getJSON(site.BASE_URI + 'js/posts.js',function(json){site.posts = json;load_random_posts(c)});
+              } 
+               else{
+                load_random_posts(c);
+              }
+          });
+      </script>
     </div>
-    <footer class="article-footer">
-      <a data-url="https://zhujiayou.github.io/2019/05/18/Ubuntu-Mint-Deepin-Linux编译安装Vim-8-1，python支持，基础配置，自动补全Completor-vim，代码格式检查flak8-vim/" data-id="cjvt5rpoz00004pdg8qct3w90" class="article-share-link">分享</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Completor/">Completor</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Flake8/">Flake8</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/linux/">linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/vim/">vim</a></li></ul>
-
-    </footer>
   </div>
+
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2019/05/18/Ubuntu-Mint-Deepin-Linux编译安装Vim-8-1，python支持，基础配置，自动补全Completor-vim，代码格式检查flak8-vim/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">Ubuntu/Mint/Deepin Linux编译安装Vim 8.1，python支持，基础配置，自动补全Completor.vim，代码格式检查flak8.vim</div>
+    </a>
+  
+</nav>
+
   
 </article>
  
-
-
-  
-    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/05/18/hello-world/" class="article-date">
-  <time datetime="2019-05-18T02:35:06.612Z" itemprop="datePublished">2019-05-18</time>
-</a>
+     
+  <div class="comments" id="comments">
     
+     
+       
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+       
+      
+      
   </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/05/18/hello-world/">Hello World</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <!-- Table of Contents -->
-        
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://zhujiayou.github.io/2019/05/18/hello-world/" data-id="cjvt5rpp500034pdgbmce5lkm" class="article-share-link">分享</a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
  
-
-
   
 
 </section>
@@ -329,98 +277,34 @@ TensorFlow源码，版本1.8.0
     <aside id="sidebar">
   
     
-  <div class="widget-wrap">
-     
-        <h3 class="follow-title ">Follow me</h3>
-     
-    <div class="widget follow">
+
+  
+    
+    <div class="widget-wrap">
+    
+      <div class="widget" id="toc-widget-fixed">
       
-              <a class="github" aria-hidden="true" href="https://github.com/ZhuJiaYou" target="_blank" title="Github"></a>
-      
-      
-      
-      
-            <a class="email" aria-hidden="true" href="mailto:lxfdbzjy@163.com" target="_blank" title="邮箱"></a>
-      
+        <strong class="toc-title">文章目录</strong>
+        <div class="toc-widget-list">
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#引言"><span class="toc-number">1.</span> <span class="toc-text">引言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#deepin上NVIDIA显卡驱动安装"><span class="toc-number">2.</span> <span class="toc-text">deepin上NVIDIA显卡驱动安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装deepin源内版本的CUDA"><span class="toc-number">3.</span> <span class="toc-text">安装deepin源内版本的CUDA</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装cuDNN和NCCL"><span class="toc-number">4.</span> <span class="toc-text">安装cuDNN和NCCL</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装TensorFlow编译环境"><span class="toc-number">5.</span> <span class="toc-text">安装TensorFlow编译环境</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#编译安装TenrsorFlow"><span class="toc-number">6.</span> <span class="toc-text">编译安装TenrsorFlow</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装编译好的TensorFlow"><span class="toc-number">7.</span> <span class="toc-text">安装编译好的TensorFlow</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#主要参考"><span class="toc-number">8.</span> <span class="toc-text">主要参考</span></a></li></ol>
+          </div>
+      </div>
     </div>
-  </div>
 
+  
+    
 
   
     
   
     
+  
+    
 
   
     
-  <div class="widget-wrap">
-    <h3 class="widget-title tagcloud">标签云</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/Completor/" style="font-size: 14px;">Completor</a> <a href="/tags/Deepin/" style="font-size: 14px;">Deepin</a> <a href="/tags/Flake8/" style="font-size: 14px;">Flake8</a> <a href="/tags/Linux/" style="font-size: 14px;">Linux</a> <a href="/tags/TensorFlow/" style="font-size: 14px;">TensorFlow</a> <a href="/tags/cuda/" style="font-size: 14px;">cuda</a> <a href="/tags/linux/" style="font-size: 14px;">linux</a> <a href="/tags/vim/" style="font-size: 14px;">vim</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title recent-posts">最新文章</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2019/05/18/deepin15-8-NDVIDIA-GTX1060-安装CUDA9-1-cuDNN7并编译安装TensorFlow-gpu/">deepin15.8 NDVIDIA GTX1060 安装CUDA9.1+cuDNN7并编译安装TensorFlow-gpu</a>
-          </li>
-        
-          <li>
-            <a href="/2019/05/18/Ubuntu-Mint-Deepin-Linux编译安装Vim-8-1，python支持，基础配置，自动补全Completor-vim，代码格式检查flak8-vim/">Ubuntu/Mint/Deepin Linux编译安装Vim 8.1，python支持，基础配置，自动补全Completor.vim，代码格式检查flak8.vim</a>
-          </li>
-        
-          <li>
-            <a href="/2019/05/18/hello-world/">Hello World</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title archive">归档</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a><span class="archive-list-count">3</span></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-<div class="widget-wrap">
-    <h3 class="widget-title">Links</h3>
-    <div class="widget">
-        <ul>
-            
-            <li>
-                <a href="http://blog.giscafer.com">giscafer&#39;s blog</a>
-            </li>
-            
-            <li>
-                <a href="http://www.gis520.com">GIS520社区</a>
-            </li>
-            
-        </ul>
-    </div>
-</div>
-
   
     <!--微信公众号二维码-->
-
-  <div class="widget-wrap">
-    <h3 class="follow-title ">WeChat</h3>
-    <div class="widget wechat-widget">
-        <img src="/images/zjy_wechat.jpg" alt="扫码关注" width="250">
-    </div>
-  </div>
 
 
   

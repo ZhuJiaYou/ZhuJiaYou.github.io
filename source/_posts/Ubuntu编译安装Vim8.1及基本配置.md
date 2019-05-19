@@ -8,13 +8,13 @@ tags:
   - Flake8
 categories: Linux 技术
 ---
-## 引言
+## 一 引言
 1. Vim是一款强大简洁的代码编辑器；
 2. 不过想要它成为开发的千里马，还需要一番调教；
 3. 这里针对本人的日常使用经验，提供一份详细简约的Vim8.1基础配置方案。
 <!--more-->
 
-## Vim编译安装
+## 二 Vim编译安装
 为什么要编译安装呢？主要是因为从操作系统源使用apt安装别人编译好的版本，大多没有python等支持，在使用一些很方便的自动补全等插件时，会出问题。
 1. 安装依赖库：
 (1) 安装libncurses5-dev，否则编译时会报`no terminal library found`错误：
@@ -57,12 +57,12 @@ categories: Linux 技术
 `sudo make install`
 
 
-## 基本配置
+## 三 基本配置
 可以参考我的.vimrc文件：
 `https://github.com/ZhuJiaYou/ZJYVimConfig/blob/master/.vimrc`
 
 
-## 自动补全插件Completor
+## 四 自动补全插件Completor
 1. 安装自动补全插件Completor：
 `mkdir -p ~/.vim/pack/completor/start`
 `cd ~/.vim/pack/completor/start`
@@ -88,7 +88,7 @@ categories: Linux 技术
 `let g:completor_clang_disable_placeholders = 1`
 
 
-## 代码格式检查插件flake8
+## 五 代码格式检查插件flake8
 1. 安装：
 ```
 mkdir -p ~/.vim/pack/flake8/start/

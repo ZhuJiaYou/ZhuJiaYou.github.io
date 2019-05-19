@@ -8,7 +8,7 @@ tags:
   - CUDA
 categories: Linux 技术
 ---
-## 引言
+## 一 引言
 1. 这里编译安装tensorflow是因为tensorflow目前正式发行版本最高只支持到cuda9.0，但是目前deepin安装cuda默认的版本是cuda9.1，所以采用源代码编译安装方式安装；
 2. 整个过程是一个比较复杂的流程，涉及到deepin安装与Ubuntu的不同而进行的特殊处理，遇到问题请多思考、搜索解决；
 3. 配置的主要复杂之处是NVIDIA驱动、cuda、cudnn、gcc、g++以及tensorflow的版本匹配，只要有一个不匹配就很麻烦；
@@ -28,7 +28,7 @@ categories: Linux 技术
 5. 按照我的上述版本基本问题不大，如果想安装其他版本自己找资料解决，不保证能成功。
 
 
-## deepin上NVIDIA显卡驱动安装
+## 二 deepin上NVIDIA显卡驱动安装
 1. deepin的显卡驱动安装很简单，基本上只要装了deepin系统，有NVIDIA显卡就要解决这个问题。
 2. 主要是两步**禁用开源驱动**和**安装驱动**。
 3. 禁用开源驱动nouveau：
@@ -50,10 +50,10 @@ options nouveau modeset=0
 `sudo apt install nvidia-smi`
 8.输入`nvidia-smi`查看显卡信息如下所示，说明安装驱动成功：
 
-![nvidia-smi](/images/nvidia-smi.jpg)
+![nvidia-smi](/images/blog1/nvidia-smi.jpg)
 
 
-## 安装deepin源内版本的CUDA
+## 三 安装deepin源内版本的CUDA
 1. 这里需要注意安装libcupti-dev，网上很多教程没有提到；
 2. 输入命令：
 ```
@@ -77,7 +77,7 @@ sudo ln -sfn /usr/lib/nvidia-cuda-toolkit/libdevice /usr/local/cuda/nvvm/libdevi
 ```
 
 
-## 安装cuDNN和NCCL
+## 四 安装cuDNN和NCCL
 1. TensorFlow依赖这两个深度学习库；
 2. 这里的安装适用于64位系统；
 3. [下载cuDNN](https://developer.nvidia.com/rdp/cudnn-archive)，需要注册NVIDIA开发者账户登陆，这里下载7.1.3 for CUDA 9.1版本 for linux的tar包(cudnn-9.1-linux-x64-v7.1.tgz)，如果选择Ubuntu的是deb包；
@@ -106,7 +106,7 @@ for i in libnccl*; do sudo ln -s /usr/lib/x86_64-linux-gnu/$i /usr/local/cuda/nc
 ```
 
 
-## 安装TensorFlow编译环境
+## 五 安装TensorFlow编译环境
 1. 安装Java：
 `sudo apt install openjdk-8-jdk`
 2. 安装gcc-4.8、g++-4.8：
@@ -130,7 +130,7 @@ export PATH="$PATH:$HOME/bin" #放在文件末尾
 ```
 
 
-## 编译安装TenrsorFlow
+## 六 编译安装TenrsorFlow
 1. 从GitHub[下载TensorFlow源码](https://github.com/tensorflow/tensorflow/releases)，这里下载1.8.0(tensorflow-1.8.0.tar.gz)；
 2. 解压后，进入目录；
 3. 输入`./configure`配置编译参数，这里给出我的配置，**有注释的需要注意**，其它的默认即可：
@@ -237,7 +237,7 @@ pip3 install -U --user keras_preprocessing==1.0.3 --no-deps
 7. 或者不用增加交换空间，直接**重新运行**5中的编译命令，会接着编译，不用太长时间就可以完成。好像是TensorFlow-gpu1.8.0版本的一个BUG。
 
 
-## 安装编译好的TensorFlow
+## 七 安装编译好的TensorFlow
 1. 输入：
 ```
 ./bazel-bin/tensorflow/tools/pip_package/build_pip_package /tmp/tensorflow_pkg
@@ -251,7 +251,7 @@ python3
 3. 如果这里引入出错，ImportError: cannot import name main，并且普通用户输入pip3出错，[参考博客](https://blog.csdn.net/accumulate_zhang/article/details/80269313)。
 
 
-## 主要参考
+## 八 主要参考
 [1] https://blog.csdn.net/HappyCtest/article/details/86747306#Step_6_Tensorflow_92
 [2] https://developer.nvidia.com/
 [3] https://blog.csdn.net/qq_27366789/article/details/80559074

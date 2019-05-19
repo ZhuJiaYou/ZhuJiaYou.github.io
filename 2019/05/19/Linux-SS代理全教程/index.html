@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>Linux SS代理全教程 | 在瞬息中触摸永恒，从微粒中进入广远</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="一 引言 Linux下可完美配置SS，包括PAC模式，终端代理，开机自启等； 不过要想完美使用尚需一番配置； 这里针对Debian系Linux，具体以Deepin为例。">
+<meta name="keywords" content="Linux,Deepin,SS,终端代理,PAC,开机自启">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux SS代理全教程">
+<meta property="og:url" content="https://zhujiayou.github.io/2019/05/19/Linux-SS代理全教程/index.html">
+<meta property="og:site_name" content="在瞬息中触摸永恒，从微粒中进入广远">
+<meta property="og:description" content="一 引言 Linux下可完美配置SS，包括PAC模式，终端代理，开机自启等； 不过要想完美使用尚需一番配置； 这里针对Debian系Linux，具体以Deepin为例。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://zhujiayou.github.io/images/blog2/sys.png">
+<meta property="og:image" content="https://zhujiayou.github.io/images/blog2/PACFile.png">
+<meta property="og:image" content="https://zhujiayou.github.io/images/blog2/so1.png">
+<meta property="og:image" content="https://zhujiayou.github.io/images/blog2/so2.png">
+<meta property="og:updated_time" content="2019-05-19T01:16:28.694Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux SS代理全教程">
+<meta name="twitter:description" content="一 引言 Linux下可完美配置SS，包括PAC模式，终端代理，开机自启等； 不过要想完美使用尚需一番配置； 这里针对Debian系Linux，具体以Deepin为例。">
+<meta name="twitter:image" content="https://zhujiayou.github.io/images/blog2/sys.png">
+  
+    <link rel="alternate" href="/atom.xml" title="在瞬息中触摸永恒，从微粒中进入广远" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    
+    <div id="header-inner" class="inner">
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://zhujiayou.github.io"></form>
+      </div>
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">归档</a>
+        
+          <a class="main-nav-link" href="/about">关于</a>
+        
+      </nav>
+      
+    </div>
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">在瞬息中触摸永恒，从微粒中进入广远</a>
+      </h1>
+      
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Linux-SS代理全教程" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/05/19/Linux-SS代理全教程/" class="article-date">
+  <time datetime="2019-05-19T01:07:04.000Z" itemprop="datePublished">2019-05-19</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux-技术/">Linux 技术</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Linux SS代理全教程
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <!-- Table of Contents -->
+        
+        <h2 id="一-引言"><a href="#一-引言" class="headerlink" title="一 引言"></a>一 引言</h2><ol>
+<li>Linux下可完美配置SS，包括PAC模式，终端代理，开机自启等；</li>
+<li>不过要想完美使用尚需一番配置；</li>
+<li>这里针对Debian系Linux，具体以Deepin为例。<a id="more"></a>
+</li>
+</ol>
+<h2 id="二-安装配置-SS-Server"><a href="#二-安装配置-SS-Server" class="headerlink" title="二 安装配置 SS Server"></a>二 安装配置 SS Server</h2><p>要使用SS，首先要有SS Server，可以购买SS Server账号，或者自行搭建。这里以自行搭建为例。</p>
+<ol>
+<li>注册云计算机器租赁提供商DigitalOcean账号，使用如下链接可享用免费额度(需绑定信用卡)：<br><a href="https://m.do.co/c/7794f02c9f32" target="_blank" rel="noopener">https://m.do.co/c/7794f02c9f32</a></li>
+<li>在DO上租赁一台国外服务器(Droplet)，最便宜的5美元一月即可。具体可自行搜索解决，很简单。</li>
+<li><p>安装SS Server：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt install python-pip</span><br><span class="line">pip install git+https://github.com/??/??.git@master  # ??处具体内容自己补充</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置SS Server：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo touch /etc/??.json</span><br><span class="line">sudo echo &apos;&#123;&quot;server&quot;:&quot;::&quot;, &quot;server_port&quot;:8388, &quot;local_address&quot;: &quot;127.0.0.1&quot;, &quot;local_port&quot;:1080, &quot;password&quot;:&quot;222265&quot;, &quot;timeout&quot;:300, &quot;method&quot;:&quot;chacha20&quot;, &quot;fast_open&quot;: false &#125;&apos; &gt; /etc/??.json</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动SS Server：<br><code>ssserver -c /etc/??.json -d start</code></p>
+</li>
+</ol>
+<h2 id="三-SS-Client-安装及基础配置"><a href="#三-SS-Client-安装及基础配置" class="headerlink" title="三 SS Client 安装及基础配置"></a>三 SS Client 安装及基础配置</h2><ol>
+<li><p>安装SS Client(命令行版本)：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install python-pip</span><br><span class="line">pip install ??</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置SS Client：<br><code>vim ~/cfgs/??.json</code>  # 可自行选择创建位置<br>写入如下内容：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    "server":Your Server IP,  # SS Server IP，字符串形式</span><br><span class="line">    "server_port":8388,</span><br><span class="line">    "local_address":"127.0.0.1",</span><br><span class="line">    "local_port":1080,</span><br><span class="line">    "password":Your Server Passwd,  # 字符串形式</span><br><span class="line">    "timeout":300,</span><br><span class="line">    "method":"chacha20"</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动SS Client：<br><code>sslocal -c ~/cfgs/??.json &amp;</code></p>
+</li>
+<li>设置Deepin系统代理：<br>（1）打开系统设置==&gt;网络==&gt;系统代理==&gt;手动，在socks代理处输入本地地址和本地端口号，如图，然后点击确定保存：<br><img src="/images/blog2/sys.png" alt="系统代理">)<br>（2）如此可配置Deepin实现系统代理，但是不完美，没有PAC模式等。下面进行讲解。</li>
+</ol>
+<h2 id="四-浏览器PAC模式代理"><a href="#四-浏览器PAC模式代理" class="headerlink" title="四 浏览器PAC模式代理"></a>四 浏览器PAC模式代理</h2><p>这里需要先生成PAC规则文件，后设置浏览器。</p>
+<ol>
+<li>安装genpac：<br><code>pip install genpac</code><br>更新：<br><code>pip install --upgrade genpac</code><br>或从github更新开发版本：<br><code>pip install --upgrade https://github.com/JinnLynn/genpac/archive/master.zip</code></li>
+<li><p>生成/更新PAC规则文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd ~/cfgs/</span><br><span class="line">sudo genpac --proxy=&quot;SOCKS5 127.0.0.1:1080&quot; --gfwlist-proxy=&quot;SOCKS5 127.0.0.1:1080&quot; -o autoproxy.pac --gfwlist-url=&quot;https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt&quot;`</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>设置PAC代理，：<br>打开系统设置==&gt;网络==&gt;系统代理==&gt;自动，在配置URL处输入如下PAC文件地址，如图，然后点击确定保存：<br><code>file:///home/user/cfgs/autoproxy.pac</code><br><img src="/images/blog2/PACFile.png" alt="PACFile"></p>
+</li>
+<li>安装SwitchyOmega插件，可到谷歌、360或者Firedox等浏览器插件商店安装，很简单，可自行搜索解决。</li>
+<li>配置SwitchyOmega，在插件“选项”中操作。<br>（1）设置代理地址<br>可以左边选择新建情景模式==&gt;选择代理服务器(命名自设，如“SS”，其他默认)；之后创建==&gt;代理协议选择为SOCKS5 、地址为 127.0.0.1、端口为自己设置的SS端口(默认为1080)，点击应用选项保存。<br><img src="/images/blog2/so1.png" alt="so1"><br>（2）设置自动切换<br>①点击左侧自动切换(Auto switch)==&gt;“规则列表匹配请求”后面选择新建的SS==&gt;“默认情景模式”为直接连接==&gt;应用选项保存。<br>②“规则列表格式”设置为AutoProxy ==&gt;填入<a href="https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt" target="_blank" rel="noopener">地址</a>==&gt;立即更新情景模式。<br>③点击应用选项保存。<br><img src="/images/blog2/so2.png" alt="so2"><br>（3）待应用之后，可以点击浏览器右上角SwitchyOmega图标，选择自动切换，浏览器可PAC模式代理。</li>
+</ol>
+<h2 id="五-终端代理"><a href="#五-终端代理" class="headerlink" title="五 终端代理"></a>五 终端代理</h2><p>上面虽然装好了??，但它是shell 里执行的命令，发起的网络请求现在只支持http代理。privoxy可以把http请求转发给socks5。</p>
+<ol>
+<li>安装privoxy：<br><code>sudo apt install privoxy</code></li>
+<li>配置privoxy：<br><code>sudo vim /etc/privoxy/config</code><br>先搜索关键字 listen-address 找到<code>listen-address 127.0.0.1:8118</code>这一句，保证这一句没有注释，8118就是将来http代理要输入的端口；然后搜索 forward-socks5t, 将 <code>#forward-socks5t / 127.0.0.1:1080 .</code>此句前面的注释去掉, 意思是转发流量到本地的1080端口, 而1080端口正是 ss 监听的端口。</li>
+<li>应用privoxy配置：<br><code>sudo privoxy --user privoxy /etc/privoxy/config</code></li>
+<li>转发配置：<br><code>vim ~/.bashrc</code><br>写入：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">export http_proxy=http://127.0.0.1:8118</span><br><span class="line">export https_proxy=http://127.0.0.1:8118</span><br><span class="line">export ftp_proxy=http://127.0.0.1:8118</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>使.bashrc生效：<br><code>source ~/.bashrc</code></p>
+<ol start="5">
+<li>在终端中测试是否可代理：<br><code>curl www.google.com</code><br>或者：<br><code>wget www.google.com</code></li>
+</ol>
+<h2 id="六-开机自启"><a href="#六-开机自启" class="headerlink" title="六 开机自启"></a>六 开机自启</h2><p>Deepin 没有 /etc/rc.local 文件，但可以自己新建此文件并用其实现** 的开机自启。</p>
+<ol>
+<li>安装supervisor管理sslocal启动：<br><code>sudo apt install supervisor</code></li>
+<li><p>配置supervisor：<br><code>sudo vim /etc/supervisor/supervisord.conf</code><br>写入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[program:??]</span><br><span class="line">command=sslocal -c /home/zjy/cfgs/??.json</span><br><span class="line">autostart=true</span><br><span class="line">autorestart=true</span><br><span class="line">user=root</span><br><span class="line">log_stderr=true</span><br><span class="line">logfile=/var/log/??.log</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>拷贝一份命令文件sslocal文件到/bin下：<br><code>sudo cp /usr/bin/sslocal /bin  # 这里的 sslocal 文件路径不同的系统，路径可能不同，可以使用 find命令查找</code></p>
+</li>
+<li>检查supervisor是否起作用：<br>保存并关掉之前的终端，再重新打开终端输入：<br><code>sudo service supervisor restart</code><br>并打开浏览器访问检查 sslocal 是否在运行。<br>当然你也可以使用命令：<br><code>ps -aux | grep sslocal</code></li>
+<li><p>创建/etc/rc.local文件：<br><code>sudo vim /etc/rc.local</code><br>写入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">/bin/sh -e</span><br><span class="line"># 在 exit 0 之前添加你的开机启动程序</span><br><span class="line"></span><br><span class="line">service supervisor start</span><br><span class="line"></span><br><span class="line">exit 0</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>重启机器，再次查看是否代理成功：<br><code>ps -aux | grep sslocal</code></p>
+</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://zhujiayou.github.io/2019/05/19/Linux-SS代理全教程/" data-id="cjvu988gl000222dg69evno7m" class="article-share-link">分享</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Deepin/">Deepin</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PAC/">PAC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SS/">SS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开机自启/">开机自启</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/终端代理/">终端代理</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+ <script src="/jquery/jquery.min.js"></script>
+  <div id="random_posts">
+    <h2>推荐文章</h2>
+    <div class="random_posts_ul">
+      <script>
+          var random_count =4
+          var site = {BASE_URI:'/'};
+          function load_random_posts(obj) {
+              var arr=site.posts;
+              if (!obj) return;
+              // var count = $(obj).attr('data-count') || 6;
+              for (var i, tmp, n = arr.length; n; i = Math.floor(Math.random() * n), tmp = arr[--n], arr[n] = arr[i], arr[i] = tmp);
+              arr = arr.slice(0, random_count);
+              var html = '<ul>';
+            
+              for(var j=0;j<arr.length;j++){
+                var item=arr[j];
+                html += '<li><strong>' + 
+                item.date + ':&nbsp;&nbsp;<a href="' + (site.BASE_URI+item.uri) + '">' + 
+                (item.title || item.uri) + '</a></strong>';
+                if(item.excerpt){
+                  html +='<div class="post-excerpt">'+item.excerpt+'</div>';
+                }
+                html +='</li>';
+                
+              }
+              $(obj).html(html + '</ul>');
+          }
+          $('.random_posts_ul').each(function () {
+              var c = this;
+              if (!site.posts || !site.posts.length){
+                  $.getJSON(site.BASE_URI + 'js/posts.js',function(json){site.posts = json;load_random_posts(c)});
+              } 
+               else{
+                load_random_posts(c);
+              }
+          });
+      </script>
+    </div>
+  </div>
+
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2019/05/18/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">Hello World</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+ 
+     
+  <div class="comments" id="comments">
+    
+     
+       
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+       
+      
+      
+  </div>
+ 
+  
+
+</section>
+           
+    <aside id="sidebar">
+  
+    
+
+  
+    
+    <div class="widget-wrap">
+    
+      <div class="widget" id="toc-widget-fixed">
+      
+        <strong class="toc-title">文章目录</strong>
+        <div class="toc-widget-list">
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一-引言"><span class="toc-text">一 引言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二-安装配置-SS-Server"><span class="toc-text">二 安装配置 SS Server</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三-SS-Client-安装及基础配置"><span class="toc-text">三 SS Client 安装及基础配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#四-浏览器PAC模式代理"><span class="toc-text">四 浏览器PAC模式代理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#五-终端代理"><span class="toc-text">五 终端代理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#六-开机自启"><span class="toc-text">六 开机自启</span></a></li></ol>
+          </div>
+      </div>
+    </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  
+    
+
+  
+    
+  
+    <!--微信公众号二维码-->
+
+
+  
+</aside>
+
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-left">
+      &copy; 2014 - 2019 朱家佑&nbsp;|&nbsp;
+      主题 <a href="https://github.com/giscafer/hexo-theme-cafe/" target="_blank">Cafe</a>
+    </div>
+     <div id="footer-right">
+      联系方式&nbsp;|&nbsp;lxfdbzjy@163.com
+    </div>
+  </div>
+</footer>
+ <script src="/jquery/jquery.min.js"></script>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+    <a href="/about" class="mobile-nav-link">关于</a>
+  
+</nav>
+    <img class="back-to-top-btn" src="/images/fly-to-top.png">
+<script>
+// Elevator script included on the page, already.
+window.onload = function() {
+  var elevator = new Elevator({
+    selector:'.back-to-top-btn',
+    element: document.querySelector('.back-to-top-btn'),
+    duration: 1000 // milliseconds
+  });
+}
+</script>
+      
+
+  
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "e2fb4051c49842688ce669e634bc983f",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+    
+
+  
+
+
+
+
+
+
+
+<!-- author:forvoid begin -->
+<!-- author:forvoid begin -->
+
+<!-- author:forvoid end -->
+
+<!-- author:forvoid end -->
+
+
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      })
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      })
+    </script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/mathjax/MathJax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+ <script src="/js/is.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+<script src="/js/elevator.js"></script>
+  </div>
+</body>
+</html>

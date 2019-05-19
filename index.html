@@ -66,220 +66,16 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-deepin15-8-NDVIDIA-GTX1060-安装CUDA9-1-cuDNN7并编译安装TensorFlow-gpu" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/05/18/deepin15-8-NDVIDIA-GTX1060-安装CUDA9-1-cuDNN7并编译安装TensorFlow-gpu/" class="article-date">
-  <time datetime="2019-05-18T06:16:40.000Z" itemprop="datePublished">2019-05-18</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/05/18/deepin15-8-NDVIDIA-GTX1060-安装CUDA9-1-cuDNN7并编译安装TensorFlow-gpu/">deepin15.8 NDVIDIA GTX1060 安装CUDA9.1+cuDNN7并编译安装TensorFlow-gpu</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <!-- Table of Contents -->
-        
-        <h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><ol>
-<li>这里编译安装tensorflow是因为tensorflow目前正式发行版本最高只支持到cuda9.0，但是目前deepin安装cuda默认的版本是cuda9.1，所以采用源代码编译安装方式安装；</li>
-<li>整个过程是一个比较复杂的流程，涉及到deepin安装与Ubuntu的不同而进行的特殊处理，遇到问题请多思考、搜索解决；</li>
-<li>配置的主要复杂之处是NVIDIA驱动、cuda、cudnn、gcc、g++以及tensorflow的版本匹配，只要有一个不匹配就很麻烦；</li>
-<li><p>需要的主要软件及其版本，具体每个怎么装后文有详述，这里是总览：</p>
-<pre><code>deepin操作系统，版本15.8
-python3，版本3.6.5
-NVIDIA显卡驱动，版本 390.67
-CUDA Toolkit，版本9.1
-cuDNN，版本7.1.3
-NCCL(NVIDIA多GPU通信框架)，版本2.1.15(for CUDA 9.1)
-gcc编译器，版本4.8
-g++编译器，版本4.8
-Bazel(谷歌的编译构造工具，用于构造tensorflow)，版本0.10.0
-TensorFlow源码，版本1.8.0
-</code></pre></li>
-<li><p>按照我的上述版本基本问题不大，如果想安装其他版本自己找资料解决，不保证能成功。</p>
-</li>
-</ol>
-<h2 id="deepin上NVIDIA显卡驱动安装"><a href="#deepin上NVIDIA显卡驱动安装" class="headerlink" title="deepin上NVIDIA显卡驱动安装"></a>deepin上NVIDIA显卡驱动安装</h2><ol>
-<li>deepin的显卡驱动安装很简单，基本上只要装了deepin系统，有NVIDIA显卡就要解决这个问题。</li>
-<li>主要是两步<strong>禁用开源驱动</strong>和<strong>安装驱动</strong>。</li>
-<li><p>禁用开源驱动nouveau：<br><code>sudo gedit /etc/modprobe.d/blacklist.conf</code><br>在文本最后添加：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">blacklist nouveau</span><br><span class="line">options nouveau modeset=0</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>接下来装驱动，要先重启X-Server，关闭X-Server：<br><code>sudo service lightdm stop  #这会关闭图形界面</code><br>按Ctrl-Alt+F2进入命令行界面，输入用户名和密码登录；<br>在终端输入：<br><code>sudo service lightdm start  #启动X-Server图形界面</code><br>按Ctrl-Alt+F1进入图形界面。</p>
-</li>
-<li>找到deepin自带的“深度显卡驱动管理”，下载显卡驱动即可(安装时需重启系统)；</li>
-<li>deepin有3种显卡驱动方案，我选择的是第3种NV-PRIME方案。</li>
-<li>安装nvidia-smi：<br><code>sudo apt install nvidia-smi</code></li>
-<li>输入<code>nvidia-smi</code>查看显卡信息如下所示，说明安装驱动成功：<br><img src="/images/nvidia-smi.jpg" alt="nvidia-smi"></li>
-</ol>
-<h2 id="安装deepin源内版本的CUDA"><a href="#安装deepin源内版本的CUDA" class="headerlink" title="安装deepin源内版本的CUDA"></a>安装deepin源内版本的CUDA</h2><ol>
-<li>这里需要注意安装libcupti-dev，网上很多教程没有提到；</li>
-<li><p>输入命令：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install nvidia-cuda-dev nvidia-cuda-toolkit nvidia-nsight nvidia-visual-profiler</span><br><span class="line">sudo apt install libcupti-dev</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>输入<code>nvcc --version</code>可看到CUDA版本信息为9.1；</p>
-</li>
-<li>由于apt安装的CUDA是分散在/usr文件夹中各处的，而很多使用CUDA的软件像cudnn、编译安装TensorFlow等，需要指定CUDA的安装位置，所以必须用软链接将CUDA的文件集合到一个文件夹中，这里是/usr/local/cuda：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir /usr/local/cuda</span><br><span class="line">sudo ln -sfn /usr/bin /usr/local/cuda/bin</span><br><span class="line">sudo ln -sfn /usr/include /usr/local/cuda/include</span><br><span class="line">sudo ln -sfn /usr/lib/x86_64-linux-gnu /usr/local/cuda/lib64</span><br><span class="line">sudo ln -sfn /usr/local/cuda/lib64 /usr/local/cuda/lib</span><br><span class="line">sudo mkdir  /usr/local/cuda/extras</span><br><span class="line">sudo mkdir  /usr/local/cuda/extras/CUPTI</span><br><span class="line">sudo ln -sfn /usr/include /usr/local/cuda/extras/CUPTI/include</span><br><span class="line">sudo ln -sfn /usr/lib/x86_64-linux-gnu /usr/local/cuda/extras/CUPTI/lib64</span><br><span class="line">sudo mkdir  /usr/local/cuda/nvvm</span><br><span class="line">sudo ln -sfn /usr/lib/nvidia-cuda-toolkit/libdevice /usr/local/cuda/nvvm/libdevice</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h2 id="安装cuDNN和NCCL"><a href="#安装cuDNN和NCCL" class="headerlink" title="安装cuDNN和NCCL"></a>安装cuDNN和NCCL</h2><ol>
-<li>TensorFlow依赖这两个深度学习库；</li>
-<li>这里的安装适用于64位系统；</li>
-<li><a href="https://developer.nvidia.com/rdp/cudnn-archive" target="_blank" rel="noopener">下载cuDNN</a>，需要注册NVIDIA开发者账户登陆，这里下载7.1.3 for CUDA 9.1版本 for linux的tar包(cudnn-9.1-linux-x64-v7.1.tgz)，如果选择Ubuntu的是deb包；</li>
-<li>解压下载的压缩包，并进入解压目录；</li>
-<li><p>将cuDNN拷贝到CUDA目录：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo cp include/* /usr/local/cuda/include/</span><br><span class="line">sudo cp lib64/libcudnn.so.7.1.3 lib64/libcudnn_static.a /usr/local/cuda/lib64/</span><br><span class="line">cd /usr/lib/x86_64-linux-gnu</span><br><span class="line">sudo ln -s libcudnn.so.7.1.3 libcudnn.so.7</span><br><span class="line">sudo ln -s libcudnn.so.7 libcudnn.so</span><br></pre></td></tr></table></figure>
-</li>
-<li><p><a href="https://developer.nvidia.com/nccl/nccl-legacy-downloads" target="_blank" rel="noopener">下载NCCL</a>，这里选择2.1.15 for CUDA 9.1 O/S agnostic版本(nccl_2.1.15-1+cuda9.1_x86_64.txz)；</p>
-</li>
-<li>解压下载的压缩包，并进入解压目录；</li>
-<li>将NCCL拷贝到CUDA目录：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir -p /usr/local/cuda/nccl/lib /usr/local/cuda/nccl/include</span><br><span class="line">sudo cp *.txt /usr/local/cuda/nccl</span><br><span class="line">sudo cp include/*.h /usr/include/</span><br><span class="line">sudo cp lib/libnccl.so.2.1.15 lib/libnccl_static.a /usr/lib/x86_64-linux-gnu/</span><br><span class="line">sudo ln -s /usr/include/nccl.h /usr/local/cuda/nccl/include/nccl.h</span><br><span class="line">cd /usr/lib/x86_64-linux-gnu</span><br><span class="line">sudo ln -s libnccl.so.2.1.15 libnccl.so.2</span><br><span class="line">sudo ln -s libnccl.so.2 libnccl.so</span><br><span class="line">for i in libnccl*; do sudo ln -s /usr/lib/x86_64-linux-gnu/$i /usr/local/cuda/nccl/lib/$i; done</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h2 id="安装TensorFlow编译环境"><a href="#安装TensorFlow编译环境" class="headerlink" title="安装TensorFlow编译环境"></a>安装TensorFlow编译环境</h2><ol>
-<li>安装Java：<br><code>sudo apt install openjdk-8-jdk</code></li>
-<li>安装gcc-4.8、g++-4.8：<br><code>sudo apt install gcc-4.8 g++-4.8</code></li>
-<li><p>设置gcc-4.8、g++-4.8为默认C编译器：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/bin</span><br><span class="line">sudo rm gcc g++</span><br><span class="line">sudo ln -s g++-4.8 g++</span><br><span class="line">sudo ln -s gcc-4.8 gcc</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>下载<a href="https://github.com/bazelbuild/bazel/releases?after=0.14.1" target="_blank" rel="noopener">bBazel</a> 0.10.0 for Linux x86_64(bazel-0.10.0-installer-linux-x86_64.sh)，安装：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo chmod +x bazel-0.10.0-installer-linux-x86_64.sh</span><br><span class="line">./bazel-0.10.0-installer-linux-x86_64.sh --user</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>将Bazel目录加入环境变量：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo vim ~/.bashrc</span><br><span class="line">export PATH=&quot;$PATH:$HOME/bin&quot; #放在文件末尾</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h2 id="编译安装TenrsorFlow"><a href="#编译安装TenrsorFlow" class="headerlink" title="编译安装TenrsorFlow"></a>编译安装TenrsorFlow</h2><ol>
-<li>从GitHub<a href="https://github.com/tensorflow/tensorflow/releases" target="_blank" rel="noopener">下载TensorFlow源码</a>，这里下载1.8.0(tensorflow-1.8.0.tar.gz)；</li>
-<li>解压后，进入目录；</li>
-<li><p>输入<code>./configure</code>配置编译参数，这里给出我的配置，<strong>有注释的需要注意</strong>，其它的默认即可：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line">zjy@svpc:~/Downloads/tensorflow-1.8.0$ ./configure</span><br><span class="line">WARNING: ignoring _JAVA_OPTIONS in environment.</span><br><span class="line">You have bazel 0.10.0 installed.</span><br><span class="line">#指定你的Python位置，这里使用python3可以通过which python3命令查看</span><br><span class="line">Please specify the location of python. [Default is /usr/local/cuda/bin/python]: /usr/local/cuda/bin/python3</span><br><span class="line"></span><br><span class="line">#设定你的Python各种库的位置</span><br><span class="line">Found possible Python library paths:</span><br><span class="line">  /usr/lib/python3/dist-packages</span><br><span class="line">  /usr/local/lib/python3.6/dist-packages</span><br><span class="line">Please input the desired Python library path to use.  Default is [/usr/lib/python3/dist-packages]</span><br><span class="line"></span><br><span class="line">Do you wish to build TensorFlow with jemalloc as malloc support? [Y/n]:</span><br><span class="line">jemalloc as malloc support will be enabled for TensorFlow.</span><br><span class="line"></span><br><span class="line">Do you wish to build TensorFlow with Google Cloud Platform support? [Y/n]:</span><br><span class="line">Google Cloud Platform support will be enabled for TensorFlow.</span><br><span class="line"></span><br><span class="line">Do you wish to build TensorFlow with Hadoop File System support? [Y/n]:</span><br><span class="line">Hadoop File System support will be enabled for TensorFlow.</span><br><span class="line"></span><br><span class="line">Do you wish to build TensorFlow with Amazon S3 File System support? [Y/n]:</span><br><span class="line">Amazon S3 File System support will be enabled for TensorFlow.</span><br><span class="line"></span><br><span class="line">Do you wish to build TensorFlow with Apache Kafka Platform support? [Y/n]:</span><br><span class="line">Apache Kafka Platform support will be enabled for TensorFlow.</span><br><span class="line"></span><br><span class="line">Do you wish to build TensorFlow with XLA JIT support? [y/N]:</span><br><span class="line">No XLA JIT support will be enabled for TensorFlow.</span><br><span class="line"></span><br><span class="line">Do you wish to build TensorFlow with GDR support? [y/N]:</span><br><span class="line">No GDR support will be enabled for TensorFlow.</span><br><span class="line"></span><br><span class="line">Do you wish to build TensorFlow with VERBS support? [y/N]:</span><br><span class="line">No VERBS support will be enabled for TensorFlow.</span><br><span class="line"></span><br><span class="line">Do you wish to build TensorFlow with OpenCL SYCL support? [y/N]:</span><br><span class="line">No OpenCL SYCL support will be enabled for TensorFlow.</span><br><span class="line"></span><br><span class="line">#是否要有CUDA支持，肯定是y，编译出来的是gpu版</span><br><span class="line">Do you wish to build TensorFlow with CUDA support? [y/N]: y</span><br><span class="line">CUDA support will be enabled for TensorFlow.</span><br><span class="line"></span><br><span class="line">#选择CUDA版本，这里是9.1</span><br><span class="line">Please specify the CUDA SDK version you want to use, e.g. 7.0. [Leave empty to default to CUDA 9.0]: 9.1</span><br><span class="line"></span><br><span class="line">#指定CUDA的安装位置，根据前面我们做好的软链接，这里填/usr/local/cuda，默认就是</span><br><span class="line">Please specify the location where CUDA 9.1 toolkit is installed. Refer to README.md for more details. [Default is /usr/local/cuda]:</span><br><span class="line"></span><br><span class="line">#指定cuDNN版本</span><br><span class="line">Please specify the cuDNN version you want to use. [Leave empty to default to cuDNN 7.0]: 7.1.3</span><br><span class="line"></span><br><span class="line">#指定cuDNN安装位置，根据前面的软链接，这里填/usr/local/cuda，默认就是</span><br><span class="line">Please specify the location where cuDNN 7 library is installed. Refer to README.md for more details. [Default is /usr/local/cuda]:</span><br><span class="line"></span><br><span class="line">Do you wish to build TensorFlow with TensorRT support? [y/N]:</span><br><span class="line">No TensorRT support will be enabled for TensorFlow.</span><br><span class="line"></span><br><span class="line">#指定NCCL版本</span><br><span class="line">Please specify the NCCL version you want to use. [Leave empty to default to NCCL 1.3]: 2.1.15</span><br><span class="line"></span><br><span class="line">#指定cuDNN安装位置，根据前面的软链接，这里填/usr/local/cuda/nccl</span><br><span class="line">Please specify the location where NCCL 2 library is installed. Refer to README.md for more details. [Default is /usr/local/cuda]:/usr/local/cuda/nccl</span><br><span class="line"></span><br><span class="line">#指定要编译的显卡CUDA计算能力，这个根据自己的显卡计算能力和需要进行编译，可以有多个，用逗号隔开，显卡计算能力可从给出问题中的链接中查到</span><br><span class="line">Please specify a list of comma-separated Cuda compute capabilities you want to build with.</span><br><span class="line">You can find the compute capability of your device at: https://developer.nvidia.com/cuda-gpus.</span><br><span class="line">Please note that each additional compute capability significantly increases your build time and binary size. [Default is: 3.5,5.2]6.1</span><br><span class="line"></span><br><span class="line">#这里选择默认的N</span><br><span class="line">Do you want to use clang as CUDA compiler? [y/N]:</span><br><span class="line">nvcc will be used as CUDA compiler.</span><br><span class="line"></span><br><span class="line">#指定gcc位置，这里使用我们已经安装的gcc 4.8版本，已设为默认</span><br><span class="line">Please specify which gcc should be used by nvcc as the host compiler. [Default is /usr/bin/gcc-4.8]:</span><br><span class="line"></span><br><span class="line">Do you wish to build TensorFlow with MPI support? [y/N]:</span><br><span class="line">No MPI support will be enabled for TensorFlow.</span><br><span class="line"></span><br><span class="line">#这里建议保持默认，即为编译所使用的这个显卡优化性能</span><br><span class="line">Please specify optimization flags to use during compilation when bazel option &quot;--config=opt&quot; is specified [Default is -march=native]:</span><br><span class="line"></span><br><span class="line">Would you like to interactively configure ./WORKSPACE for Android builds? [y/N]:</span><br><span class="line">Not configuring the WORKSPACE for Android builds.</span><br><span class="line"></span><br><span class="line">Preconfigured Bazel build configs. You can use any of the below by adding &quot;--config=&lt;&gt;&quot; to your build command. See tools/bazel.rc for more details.</span><br><span class="line">        --config=mkl            # Build with MKL support.</span><br><span class="line">        --config=monolithic     # Config for mostly static monolithic build.</span><br><span class="line">Configuration finished</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>确保已安装需要的python库：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pip3 install -U --user pip six numpy wheel mock</span><br><span class="line">pip3 install -U --user keras_applications==1.0.5 --no-deps</span><br><span class="line">pip3 install -U --user keras_preprocessing==1.0.3 --no-deps</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>编译TensorFlow-gpu：<br><code>bazel build --config=opt --config=cuda //tensorflow/tools/pip_package:build_pip_package</code></p>
-</li>
-<li>编译时间两小时左右，如果在编译一个多小时后发生中断，并无详细输出信息，可能是系统缺少交换空间。如何增加交换空间，<a href="https://blog.csdn.net/u010429286/article/details/79219230" target="_blank" rel="noopener">参考博客</a>。我这里系统有16GB内存，发生了中断，又增加了64GB swap空间后成功编译。</li>
-<li>或者不用增加交换空间，直接<strong>重新运行</strong>5中的编译命令，会接着编译，不用太长时间就可以完成。好像是TensorFlow-gpu1.8.0版本的一个BUG。</li>
-</ol>
-<h2 id="安装编译好的TensorFlow"><a href="#安装编译好的TensorFlow" class="headerlink" title="安装编译好的TensorFlow"></a>安装编译好的TensorFlow</h2><ol>
-<li><p>输入：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./bazel-bin/tensorflow/tools/pip_package/build_pip_package /tmp/tensorflow_pkg</span><br><span class="line">pip3 install --user /tmp/tensorflow_pkg/tensorflow*</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>到这里就装好了TensorFlow GPU版本，测试：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">python3</span><br><span class="line">&gt;&gt;&gt;import tensorflow as tf</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>如果这里引入出错，ImportError: cannot import name main，并且普通用户输入pip3出错，<a href="https://blog.csdn.net/accumulate_zhang/article/details/80269313" target="_blank" rel="noopener">参考博客</a>。</p>
-</li>
-</ol>
-<h2 id="主要参考"><a href="#主要参考" class="headerlink" title="主要参考"></a>主要参考</h2><p>[1] <a href="https://blog.csdn.net/HappyCtest/article/details/86747306#Step_6_Tensorflow_92" target="_blank" rel="noopener">https://blog.csdn.net/HappyCtest/article/details/86747306#Step_6_Tensorflow_92</a><br>[2] <a href="https://developer.nvidia.com/" target="_blank" rel="noopener">https://developer.nvidia.com/</a><br>[3] <a href="https://blog.csdn.net/qq_27366789/article/details/80559074" target="_blank" rel="noopener">https://blog.csdn.net/qq_27366789/article/details/80559074</a><br>[4] <a href="https://blog.csdn.net/zibuyu1226/article/details/79212229" target="_blank" rel="noopener">https://blog.csdn.net/zibuyu1226/article/details/79212229</a><br>[5] <a href="https://blog.csdn.net/qq_36583984/article/details/80490634" target="_blank" rel="noopener">https://blog.csdn.net/qq_36583984/article/details/80490634</a><br>[6] <a href="https://tensorflow.google.cn" target="_blank" rel="noopener">https://tensorflow.google.cn</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://zhujiayou.github.io/2019/05/18/deepin15-8-NDVIDIA-GTX1060-安装CUDA9-1-cuDNN7并编译安装TensorFlow-gpu/" data-id="cjvt5rpp200014pdgodzkby5q" class="article-share-link">分享</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Deepin/">Deepin</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TensorFlow/">TensorFlow</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cuda/">cuda</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
- 
-
-
-  
-    <article id="post-Ubuntu-Mint-Deepin-Linux编译安装Vim-8-1，python支持，基础配置，自动补全Completor-vim，代码格式检查flak8-vim" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/05/18/Ubuntu-Mint-Deepin-Linux编译安装Vim-8-1，python支持，基础配置，自动补全Completor-vim，代码格式检查flak8-vim/" class="article-date">
-  <time datetime="2019-05-18T04:20:28.000Z" itemprop="datePublished">2019-05-18</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/05/18/Ubuntu-Mint-Deepin-Linux编译安装Vim-8-1，python支持，基础配置，自动补全Completor-vim，代码格式检查flak8-vim/">Ubuntu/Mint/Deepin Linux编译安装Vim 8.1，python支持，基础配置，自动补全Completor.vim，代码格式检查flak8.vim</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <!-- Table of Contents -->
-        
-        <h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><ol>
-<li>Vim是一款强大简洁的代码编辑器；</li>
-<li>不过想要它成为开发的千里马，还需要一番调教；</li>
-<li>这里针对本人的日常使用经验，提供一份详细简约的Vim8.1基础配置方案。</li>
-</ol>
-<h2 id="Vim编译安装"><a href="#Vim编译安装" class="headerlink" title="Vim编译安装"></a>Vim编译安装</h2><p>为什么要编译安装呢？主要是因为从操作系统源使用apt安装别人编译好的版本，大多没有python等支持，在使用一些很方便的自动补全等插件时，会出问题。</p>
-<ol>
-<li>安装依赖库：<br>(1) 安装libncurses5-dev，否则编译时会报<code>no terminal library found</code>错误：<br><code>sudo apt install libncurses5-dev</code><br>(2) 由于这里要添加python支持，所以要装python3-dev(或者python-dev，对于python2用户)，否则编译时报<code>Python.h: No such file or directory</code>错误：<br><code>sudo apt-get install python3-dev</code></li>
-<li>克隆Vim源代码，并进入目录：<br><code>git clone https://github.com/vim/vim</code><br><code>cd vim</code></li>
-<li>配置Vim编译选项：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">./configure --with-features=huge \</span><br><span class="line">                  --enable-multibyte \</span><br><span class="line">                  --enable-rubyinterp=yes \</span><br><span class="line">                  --enable-python3interp=yes \</span><br><span class="line">                  --with-python3-config-dir=/usr/lib/python3.5/config-3.5m-x86_64-linux-gnu \</span><br><span class="line">                  --enable-pythoninterp=yes \</span><br><span class="line">                  --with-python-config-dir=/usr/lib/python2.7/config-x86_64-linux-gnu \</span><br><span class="line">                  --enable-perlinterp=yes \</span><br><span class="line">                  --enable-luainterp=yes \</span><br><span class="line">                  --enable-gui=auto \</span><br><span class="line">                  --enable-cscope \</span><br><span class="line">                  --prefix=/usr</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>参数解释如下：<br>–with-features=huge：支持最大特性<br>–enable-rubyinterp：打开对ruby编写的插件的支持<br>–enable-pythoninterp：打开对python编写的插件的支持<br>–enable-python3interp：打开对python3编写的插件的支持<br>–enable-luainterp：打开对lua编写的插件的支持<br>–enable-perlinterp：打开对perl编写的插件的支持<br>–enable-multibyte：打开多字节支持，可以在Vim中输入中文<br>–enable-cscope：打开对cscope的支持<br>–with-python-config-dir=/usr/lib/python2.7/config-x86_64-linux-gnu/ 指定python config路径<br>–with-python-config-dir=/usr/lib/python3.5/config-3.5m-x86_64-linux-gnu/ 指定python3 config路径(<strong>根据自己系统实际情况配置</strong>)<br>–prefix=/usr：指定将要安装到的路径(可自行创建)<br>–enable-gui：GUI支持，可用auto、gtk2或者gnome</p>
-<ol start="4">
-<li>编译安装：<br><code>make</code><br><code>sudo make install</code></li>
-</ol>
-<h2 id="基本配置"><a href="#基本配置" class="headerlink" title="基本配置"></a>基本配置</h2><p>可以参考我的.vimrc文件：<br><code>https://github.com/ZhuJiaYou/ZJYVimConfig/blob/master/.vimrc</code></p>
-<h2 id="自动补全插件Completor"><a href="#自动补全插件Completor" class="headerlink" title="自动补全插件Completor"></a>自动补全插件Completor</h2><ol>
-<li>安装自动补全插件Completor：<br><code>mkdir -p ~/.vim/pack/completor/start</code><br><code>cd ~/.vim/pack/completor/start</code><br><code>git clone https://github.com/maralla/completor.vim.git</code></li>
-<li>python补全支持：<br>(1)安装pip3：<br><code>sudo apt install python3-pip</code><br>(2)安装jedi：<br><code>pip3 install jedi</code><br>.vimrc中加入安装jedi的python路径(上三中基本配置中已有)：<br><code>let g:completor_python_binary = &#39;/path/to/python/with/jedi/installed&#39;</code></li>
-<li>C/C++补全支持：<br>(1)安装clang：<br><code>sudo apt install clang</code><br>在.vimrc中添加(已有)：<br><code>let g:completor_clang_binary = &#39;/path/to/clang&#39;</code><br>(2)C++11 支持：<br><code>vim ~/.vim/pack/completor/start/completor.vim/.clang_complete</code><br>写入：<br><code>-std=c++11</code><br>还可添加其它配置，可<a href="https://github.com/maralla/completor.vim" target="_blank" rel="noopener">参考</a><br>(3)去掉C/C++补全自动占位符，在.vimrc中添加(已有)：<br><code>let g:completor_clang_disable_placeholders = 1</code></li>
-</ol>
-<h2 id="代码格式检查插件flake8"><a href="#代码格式检查插件flake8" class="headerlink" title="代码格式检查插件flake8"></a>代码格式检查插件flake8</h2><ol>
-<li><p>安装：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p ~/.vim/pack/flake8/start/</span><br><span class="line">cd ~/.vim/pack/flake8/start/</span><br><span class="line">git clone https://github.com/nvie/vim-flake8.git</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>按F7可代码检查。</p>
-</li>
-<li>详细配置请<a href="https://github.com/nvie/vim-flake8" target="_blank" rel="noopener">参考</a>。</li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://zhujiayou.github.io/2019/05/18/Ubuntu-Mint-Deepin-Linux编译安装Vim-8-1，python支持，基础配置，自动补全Completor-vim，代码格式检查flak8-vim/" data-id="cjvt5rpoz00004pdg8qct3w90" class="article-share-link">分享</a>
-      
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Completor/">Completor</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Flake8/">Flake8</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/linux/">linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/vim/">vim</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
- 
-
-
-  
     <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/05/18/hello-world/" class="article-date">
-  <time datetime="2019-05-18T02:35:06.612Z" itemprop="datePublished">2019-05-18</time>
+  <time datetime="2019-05-18T07:34:28.065Z" itemprop="datePublished">2019-05-18</time>
 </a>
     
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Markdown/">Markdown</a>
+  </div>
+
   </div>
   <div class="article-inner">
     
@@ -296,25 +92,124 @@ TensorFlow源码，版本1.8.0
     
     <div class="article-entry" itemprop="articleBody">
       
-        <!-- Table of Contents -->
+        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.<br>
         
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
+          </p><p class="article-more-link">
+            <a href="/2019/05/18/hello-world/#more">继续阅读全文 »</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://zhujiayou.github.io/2019/05/18/hello-world/" data-id="cjvt5rpp500034pdgbmce5lkm" class="article-share-link">分享</a>
+      <a data-url="https://zhujiayou.github.io/2019/05/18/hello-world/" data-id="cjvt0apd70002g0dg8nm7ydwm" class="article-share-link">分享</a>
       
       
       
+    </footer>
+  </div>
+  
+</article>
+ 
+
+
+  
+    <article id="post-Deepin编译安装TensorFlow-gpu" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/05/18/Deepin编译安装TensorFlow-gpu/" class="article-date">
+  <time datetime="2019-05-18T06:16:40.000Z" itemprop="datePublished">2019-05-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux-技术/">Linux 技术</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/05/18/Deepin编译安装TensorFlow-gpu/">Deepin编译安装TensorFlow-gpu</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><ol>
+<li>这里编译安装tensorflow是因为tensorflow目前正式发行版本最高只支持到cuda9.0，但是目前deepin安装cuda默认的版本是cuda9.1，所以采用源代码编译安装方式安装；</li>
+<li>整个过程是一个比较复杂的流程，涉及到deepin安装与Ubuntu的不同而进行的特殊处理，遇到问题请多思考、搜索解决；</li>
+<li>配置的主要复杂之处是NVIDIA驱动、cuda、cudnn、gcc、g++以及tensorflow的版本匹配，只要有一个不匹配就很麻烦；</li>
+<li><p>需要的主要软件及其版本，具体每个怎么装后文有详述，这里是总览：</p>
+        
+          <p class="article-more-link">
+            <a href="/2019/05/18/Deepin编译安装TensorFlow-gpu/#more">继续阅读全文 »</a>
+          </p>
+        
+      
+    </li></ol></div>
+    <footer class="article-footer">
+      <a data-url="https://zhujiayou.github.io/2019/05/18/Deepin编译安装TensorFlow-gpu/" data-id="cjvt932850010vhdgz2oee5sy" class="article-share-link">分享</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CUDA/">CUDA</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Deepin/">Deepin</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TensorFlow/">TensorFlow</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+ 
+
+
+  
+    <article id="post-Ubuntu编译安装Vim8.1及基本配置" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/05/18/Ubuntu编译安装Vim8.1及基本配置/" class="article-date">
+  <time datetime="2019-05-18T04:20:28.000Z" itemprop="datePublished">2019-05-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux-技术/">Linux 技术</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/05/18/Ubuntu编译安装Vim8.1及基本配置/">Ubuntu编译安装Vim8.1及基本配置</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><ol>
+<li>Vim是一款强大简洁的代码编辑器；</li>
+<li>不过想要它成为开发的千里马，还需要一番调教；</li>
+<li>这里针对本人的日常使用经验，提供一份详细简约的Vim8.1基础配置方案。
+        
+          <p class="article-more-link">
+            <a href="/2019/05/18/Ubuntu编译安装Vim8.1及基本配置/#more">继续阅读全文 »</a>
+          </p>
+        
+      
+    </li></ol></div>
+    <footer class="article-footer">
+      <a data-url="https://zhujiayou.github.io/2019/05/18/Ubuntu编译安装Vim8.1及基本配置/" data-id="cjvt62bhv000evhdglwatg1fl" class="article-share-link">分享</a>
+      
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Completor/">Completor</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Flake8/">Flake8</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/VIM/">VIM</a></li></ul>
+
     </footer>
   </div>
   
@@ -348,15 +243,23 @@ TensorFlow源码，版本1.8.0
 
   
     
+
   
     
+  <div class="widget-wrap">
+    <h3 class="widget-title categories">分类</h3>
+    <div class="widget" id="categories">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux-技术/">Linux 技术</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Markdown/">Markdown</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
 
   
     
   <div class="widget-wrap">
     <h3 class="widget-title tagcloud">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Completor/" style="font-size: 14px;">Completor</a> <a href="/tags/Deepin/" style="font-size: 14px;">Deepin</a> <a href="/tags/Flake8/" style="font-size: 14px;">Flake8</a> <a href="/tags/Linux/" style="font-size: 14px;">Linux</a> <a href="/tags/TensorFlow/" style="font-size: 14px;">TensorFlow</a> <a href="/tags/cuda/" style="font-size: 14px;">cuda</a> <a href="/tags/linux/" style="font-size: 14px;">linux</a> <a href="/tags/vim/" style="font-size: 14px;">vim</a>
+      <a href="/tags/CUDA/" style="font-size: 14px;">CUDA</a> <a href="/tags/Completor/" style="font-size: 14px;">Completor</a> <a href="/tags/Deepin/" style="font-size: 14px;">Deepin</a> <a href="/tags/Flake8/" style="font-size: 14px;">Flake8</a> <a href="/tags/Linux/" style="font-size: 25px;">Linux</a> <a href="/tags/TensorFlow/" style="font-size: 14px;">TensorFlow</a> <a href="/tags/VIM/" style="font-size: 14px;">VIM</a>
     </div>
   </div>
 
@@ -368,15 +271,15 @@ TensorFlow源码，版本1.8.0
       <ul>
         
           <li>
-            <a href="/2019/05/18/deepin15-8-NDVIDIA-GTX1060-安装CUDA9-1-cuDNN7并编译安装TensorFlow-gpu/">deepin15.8 NDVIDIA GTX1060 安装CUDA9.1+cuDNN7并编译安装TensorFlow-gpu</a>
-          </li>
-        
-          <li>
-            <a href="/2019/05/18/Ubuntu-Mint-Deepin-Linux编译安装Vim-8-1，python支持，基础配置，自动补全Completor-vim，代码格式检查flak8-vim/">Ubuntu/Mint/Deepin Linux编译安装Vim 8.1，python支持，基础配置，自动补全Completor.vim，代码格式检查flak8.vim</a>
-          </li>
-        
-          <li>
             <a href="/2019/05/18/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2019/05/18/Deepin编译安装TensorFlow-gpu/">Deepin编译安装TensorFlow-gpu</a>
+          </li>
+        
+          <li>
+            <a href="/2019/05/18/Ubuntu编译安装Vim8.1及基本配置/">Ubuntu编译安装Vim8.1及基本配置</a>
           </li>
         
       </ul>

@@ -27,7 +27,6 @@ wechat_url: /images/zjy_wechat.jpg ## 启用wechat widget才会生效
 # Friendly links 友情链接
 links:
   giscafer's blog: http://blog.giscafer.com
-  GIS520社区: http://www.gis520.com
 
 # 侧边栏 Sidebar，目前仅支持right
 sidebar: right

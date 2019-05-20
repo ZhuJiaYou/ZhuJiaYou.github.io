@@ -61,7 +61,7 @@ pip install ??
 `sslocal -c ~/cfgs/??.json &`
 4. 设置Deepin系统代理：
 （1）打开系统设置==>网络==>系统代理==>手动，在socks代理处输入本地地址和本地端口号，如图，然后点击确定保存：
-![系统代理](/images/blog2/sys.png))
+![系统代理](/images/blog2/sys.png)
 （2）如此可配置Deepin实现系统代理，但是不完美，没有PAC模式等。下面进行讲解。
 
 

@@ -32,14 +32,16 @@
       <% } %>
     </div>
     <footer class="article-footer">
-      <a data-url="<%- post.permalink %>" data-id="<%= post._id %>" class="article-share-link"><%= __('share') %></a>
-      <% if (post.comments && theme.duoshuo_shortname){ %>
-        <a href="<%- post.permalink %>#ds-thread" class="article-comment-link"><%= __('comment') %></a>
+      <% if (post.date.toString() != "Thu Jan 01 1970 08:00:00 GMT+0800"){ %>
+        <a data-url="<%- post.permalink %>" data-id="<%= post._id %>" class="article-share-link"><%= __('share') %></a>
+        <% if (post.comments && theme.duoshuo_shortname){ %>
+          <a href="<%- post.permalink %>#ds-thread" class="article-comment-link"><%= __('comment') %></a>
+        <% } %>
+        <% if (post.comments && theme.disqus_shortname){ %>
+          <a href="<%- post.permalink %>#disqus_thread" class="article-comment-link"><%= __('comment') %></a>
+        <% } %>
+        <%- partial('post/tag') %>
       <% } %>
-      <% if (post.comments && theme.disqus_shortname){ %>
-        <a href="<%- post.permalink %>#disqus_thread" class="article-comment-link"><%= __('comment') %></a>
-      <% } %>
-      <%- partial('post/tag') %>
     </footer>
   </div>
   <% if (!index){ %>
